@@ -295,6 +295,7 @@ int main(int argc, char *argv[]) {
         size_t offset = 0;
         for (int i = 0; i < 4; ++i) {
             const size_t write_size = (size_t)(lrand48() % ((size >> 2) - 16));
+            // const size_t write_size = (size_t)(lrand48() % 1);
             eprintf("writing %zu to expected offset %zu\n", write_size, offset);
 
             char *write_ptr = zc_write_start(zcfile, write_size);
