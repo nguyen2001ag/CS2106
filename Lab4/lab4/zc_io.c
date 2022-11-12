@@ -84,6 +84,9 @@ int zc_close(zc_file *file) {
         if (munmap(file->ptr, file->fileSize) < 0)
             return -1;
     }
+    sem_destroy(&file->roomEmpty);
+    sem_destroy(&file->readMutex);
+    sem_destroy(&file->mutex);
 
     free(file);
     return 0;
@@ -101,6 +104,7 @@ const char *zc_read_start(zc_file *file, size_t *size) {
 
     sem_wait(&file->readMutex);
     if (file->offsetl > file->fileSize){
+        sem_post(&file->readMutex);
         return NULL;
     }
 
