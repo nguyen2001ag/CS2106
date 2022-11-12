@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <stdio.h>
-#include  <fcntl.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -104,6 +104,7 @@ const char *zc_read_start(zc_file *file, size_t *size) {
 
     sem_wait(&file->readMutex);
     if (file->offsetl > file->fileSize){
+        *size = 0;
         sem_post(&file->readMutex);
         return NULL;
     }
