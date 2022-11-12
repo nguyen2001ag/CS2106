@@ -51,7 +51,7 @@ zc_file *zc_open(const char *path) {
     if (fileSize > 0){
         ptr = mmap(NULL, fileSize,
             PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-            
+
         if(ptr == MAP_FAILED){
             printf("Mapping Failed\n");
             return NULL;
@@ -208,8 +208,9 @@ int zc_copyfile(const char *source, const char *dest) {
     zc_file *src = zc_open(source);
     zc_file *dst = zc_open(dest);
 
+
+    ftruncate(dst->fd, src->fileSize);
     if (src->fileSize == 0){
-        ftruncate(dst->fd, src->fileSize);
         return 0;
     }
 
@@ -225,7 +226,6 @@ int zc_copyfile(const char *source, const char *dest) {
         return -1;
     }
 
-    ftruncate(dst->fd, src->fileSize);
     dst->fileSize = src->fileSize;
     memcpy(dst->ptr, src->ptr, src->fileSize);
     
