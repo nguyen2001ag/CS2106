@@ -77,8 +77,10 @@ int zc_close(zc_file *file) {
     if (close(file->fd) < 0)
         return -1;
 
-    if (munmap(file->ptr, file->fileSize) < 0)
-        return -1;
+    if (file->fileSize > 0){
+        if (munmap(file->ptr, file->fileSize) < 0)
+            return -1;
+    }
 
     free(file);
     return 0;
@@ -161,6 +163,7 @@ char *zc_write_start(zc_file *file, size_t size) {
 
 void zc_write_end(zc_file *file) {
     // To implement
+    msync(file->ptr, file->fileSize, MS_SYNC);
     sem_post(&file->roomEmpty);
 }
 
